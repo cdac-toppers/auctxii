@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuctXI — Professional Development Roadmap</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter','sans-serif'], serif: ['Playfair Display','serif'] },
+          colors: { brand: { black:'#080808', dark:'#121212', gray:'#1E1E1E', orange:'#C25E28', 'orange-hover':'#A84E1F' } }
+        }
+      }
+    }
+  </script>
+  <style>
+    *{-webkit-font-smoothing:antialiased}
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:#080808}
+    ::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+    ::-webkit-scrollbar-thumb:hover{background:#555}
+    @media print{.no-print{display:none!important}.print-break{page-break-before:always}body{background:white!important;color:black!important}}
+    .sidebar-link.active{background:rgba(194,94,40,.1);color:#C25E28;border-left-color:#C25E28}
+    .collapsible-content{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1),opacity .3s ease;opacity:0}
+    .collapsible-content.open{max-height:8000px;opacity:1}
+    .phase-header{cursor:pointer}
+    .phase-header:hover .phase-title{color:#C25E28}
+    .phase-title{transition:color .15s ease}
+    .check-btn.checked{background:#16a34a;border-color:#16a34a;color:white}
+    .code-block{background:#0d0d0d;border:1px solid rgba(255,255,255,.08)}
+    .flow-arrow{animation:pulseDown 2s ease-in-out infinite}
+    @keyframes pulseDown{0%,100%{opacity:.4;transform:translateY(0)}50%{opacity:1;transform:translateY(4px)}}
+    .toast{animation:slideInRight .3s ease,fadeOut .3s ease 2.7s forwards}
+    @keyframes slideInRight{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+    @keyframes fadeOut{from{opacity:1}to{opacity:0}}
+    .sub-step{border-left:2px solid rgba(255,255,255,.06);margin-left:12px;padding-left:20px}
+    .repo-tree{counter-reset:line}
+    .phase-badge{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+  </style>
+</head>
+<body class="bg-brand-black text-slate-200 font-sans">
+
+<div id="toastContainer" class="fixed top-6 right-6 z-[100] flex flex-col gap-3"></div>
+<div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-40 hidden no-print" onclick="toggleSidebar()"></div>
+
+<!-- HEADER -->
+<header class="fixed top-0 left-0 right-0 h-16 bg-brand-black/90 backdrop-blur-md border-b border-white/5 z-50 no-print">
+  <div class="flex items-center justify-between h-full px-6">
+    <div class="flex items-center gap-4">
+      <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg hover:bg-white/5 transition-colors"><i data-lucide="menu" class="w-5 h-5"></i></button>
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-brand-orange rounded-lg flex items-center justify-center"><i data-lucide="gavel" class="w-4 h-4 text-white"></i></div>
+        <div><span class="font-serif text-lg font-semibold text-white">AuctXI</span><span class="text-xs text-slate-500 ml-2 hidden sm:inline">Development Roadmap</span></div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="relative hidden md:block">
+        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+        <input id="searchInput" type="text" placeholder="Search..." class="bg-white/5 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-300 placeholder:text-slate-600 focus:outline-none focus:border-brand-orange/50 w-48 transition-colors" oninput="filterSections(this.value)">
+      </div>
+      <div class="flex items-center gap-2 text-xs text-slate-500">
+        <span id="progressText">0/5</span>
+        <div class="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden"><div id="progressBar" class="h-full bg-brand-orange rounded-full transition-all duration-500" style="width:0%"></div></div>
+      </div>
+      <button onclick="window.print()" class="p-2 rounded-lg hover:bg-white/5 transition-colors text-slate-500 hover:text-slate-300"><i data-lucide="printer" class="w-4 h-4"></i></button>
+    </div>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="fixed top-16 left-0 bottom-0 w-72 bg-brand-dark border-r border-white/5 z-40 overflow-y-auto no-print transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+  <nav class="p-4 space-y-1">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-600 px-3 mb-3">Overview</div>
+    <a href="#overview" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><i data-lucide="home" class="w-4 h-4"></i>Introduction</a>
+    <a href="#roadmap" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><i data-lucide="map" class="w-4 h-4"></i>Roadmap</a>
+    <a href="#toolstack" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><i data-lucide="wrench" class="w-4 h-4"></i>Tool Stack</a>
+
+    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-600 px-3 mb-3 mt-6">Phases</div>
+    <a href="#phase-1" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><span class="w-5 h-5 rounded-md bg-blue-500/10 text-blue-400 flex items-center justify-center text-[10px] font-bold">1</span>Planning</a>
+    <a href="#phase-2" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><span class="w-5 h-5 rounded-md bg-purple-500/10 text-purple-400 flex items-center justify-center text-[10px] font-bold">2</span>Design</a>
+    <a href="#phase-3" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><span class="w-5 h-5 rounded-md bg-green-500/10 text-green-400 flex items-center justify-center text-[10px] font-bold">3</span>Development</a>
+    <a href="#phase-4" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><span class="w-5 h-5 rounded-md bg-orange-500/10 text-orange-400 flex items-center justify-center text-[10px] font-bold">4</span>DevOps</a>
+    <a href="#phase-5" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><span class="w-5 h-5 rounded-md bg-red-500/10 text-red-400 flex items-center justify-center text-[10px] font-bold">5</span>Testing & Delivery</a>
+
+    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-600 px-3 mb-3 mt-6">GitHub</div>
+    <a href="#github-org" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><i data-lucide="github" class="w-4 h-4"></i>Organization</a>
+    <a href="#branch-strategy" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><i data-lucide="git-branch" class="w-4 h-4"></i>Branch Strategy</a>
+    <a href="#labels-milestones" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><i data-lucide="tag" class="w-4 h-4"></i>Labels & Milestones</a>
+    <a href="#pr-template" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><i data-lucide="git-pull-request" class="w-4 h-4"></i>PR Template</a>
+
+    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-600 px-3 mb-3 mt-6">Reference</div>
+    <a href="#workflow" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><i data-lucide="refresh-cw" class="w-4 h-4"></i>Feature Workflow</a>
+    <a href="#complete-flow" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><i data-lucide="arrow-down-circle" class="w-4 h-4"></i>Complete Flow</a>
+    <a href="#deliverables" class="sidebar-link flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"><i data-lucide="check-circle" class="w-4 h-4"></i>Deliverables</a>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="lg:ml-72 pt-16">
+<div class="max-w-4xl mx-auto px-6 md:px-12 py-12 md:py-20">
+
+<!-- ==================== OVERVIEW ==================== -->
+<section id="overview" class="mb-20 scroll-mt-24 searchable">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="w-10 h-10 rounded-xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center"><i data-lucide="book-open" class="w-5 h-5 text-brand-orange"></i></div>
+    <div><h1 class="font-serif text-3xl md:text-4xl font-semibold text-white tracking-tight">AuctXI</h1><p class="text-sm text-slate-500">Professional Development Roadmap v1.0</p></div>
+  </div>
+  <p class="text-slate-300 text-lg leading-relaxed font-light mb-8">This document outlines how <strong class="text-white font-medium">AuctXI</strong> is built — not as a college project, but as if <strong class="text-white font-medium">running a small software team</strong>. Every feature follows the same lifecycle: Jira Story → Figma Design → GitHub Branch → Development → Pull Request → Review → Testing → Merge → Deployment → Documentation.</p>
+  <div class="bg-brand-gray border border-white/5 rounded-2xl p-6 md:p-8 mb-8">
+    <h3 class="text-white font-medium text-sm mb-4 flex items-center gap-2"><i data-lucide="target" class="w-4 h-4 text-brand-orange"></i>Core Principle</h3>
+    <p class="text-slate-400 text-sm leading-relaxed mb-6">Instead of thinking of this as "building a college project," treat it as <strong class="text-slate-200">running a small software team</strong>. If you consistently follow the professional workflow for every feature, you'll gain experience that closely resembles how many professional development teams work.</p>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div class="bg-brand-dark rounded-xl p-4 text-center border border-blue-500/10"><div class="text-2xl font-serif font-semibold text-blue-400">1</div><div class="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">Planning</div></div>
+      <div class="bg-brand-dark rounded-xl p-4 text-center border border-purple-500/10"><div class="text-2xl font-serif font-semibold text-purple-400">2</div><div class="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">Design</div></div>
+      <div class="bg-brand-dark rounded-xl p-4 text-center border border-green-500/10"><div class="text-2xl font-serif font-semibold text-green-400">3</div><div class="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">Development</div></div>
+      <div class="bg-brand-dark rounded-xl p-4 text-center border border-orange-500/10"><div class="text-2xl font-serif font-semibold text-orange-400">4</div><div class="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">DevOps</div></div>
+      <div class="bg-brand-dark rounded-xl p-4 text-center border border-red-500/10"><div class="text-2xl font-serif font-semibold text-red-400">5</div><div class="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">Delivery</div></div>
+    </div>
+  </div>
+  <div class="bg-brand-orange/5 border border-brand-orange/20 rounded-2xl p-6">
+    <div class="flex items-start gap-3"><i data-lucide="lightbulb" class="w-5 h-5 text-brand-orange mt-0.5 flex-shrink-0"></i><div><h4 class="text-white text-sm font-medium mb-1">Recommendation</h4><p class="text-slate-400 text-sm leading-relaxed">Use <strong class="text-slate-200">Jira</strong> for Agile planning (epics, stories, sprints) and <strong class="text-slate-200">GitHub Projects + Issues</strong> for the actual development workflow. This combination is common in professional teams.</p></div></div>
+  </div>
+</section>
+
+<!-- ==================== ROADMAP ==================== -->
+<section id="roadmap" class="mb-20 scroll-mt-24 searchable">
+  <h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight mb-8 flex items-center gap-3"><i data-lucide="map" class="w-6 h-6 text-brand-orange"></i>Roadmap</h2>
+  <div class="bg-brand-gray border border-white/5 rounded-2xl p-8 overflow-x-auto">
+    <div class="flex flex-col items-center gap-0 min-w-[500px]">
+      <div class="bg-brand-orange/10 border border-brand-orange/30 text-brand-orange text-xs font-semibold px-6 py-2.5 rounded-full mb-1">IDEA</div>
+      <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 flow-arrow"></i>
+      <div class="bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold px-6 py-2.5 rounded-full tracking-wider">PHASE 1 — PROJECT PLANNING</div>
+      <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 flow-arrow"></i>
+      <div class="bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-bold px-6 py-2.5 rounded-full tracking-wider">PHASE 2 — SYSTEM DESIGN</div>
+      <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 flow-arrow"></i>
+      <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-bold px-6 py-2.5 rounded-full tracking-wider">PHASE 3 — DEVELOPMENT</div>
+      <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 flow-arrow"></i>
+      <div class="bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs font-bold px-6 py-2.5 rounded-full tracking-wider">PHASE 4 — DEVOPS & DEPLOYMENT</div>
+      <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 flow-arrow"></i>
+      <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold px-6 py-2.5 rounded-full tracking-wider">PHASE 5 — TESTING & DELIVERY</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TOOL STACK ==================== -->
+<section id="toolstack" class="mb-20 scroll-mt-24 searchable">
+  <h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight mb-8 flex items-center gap-3"><i data-lucide="wrench" class="w-6 h-6 text-brand-orange"></i>Complete Tool Stack</h2>
+  <div class="bg-brand-gray border border-white/5 rounded-2xl overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-white/5">
+          <th class="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Phase</th>
+          <th class="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Activity</th>
+          <th class="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Tool</th>
+        </tr></thead>
+        <tbody>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">PLANNING</span></td><td class="px-6 py-3 text-slate-400">Requirements & Meeting Notes</td><td class="px-6 py-3 text-white font-medium">Notion</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">PLANNING</span></td><td class="px-6 py-3 text-slate-400">Agile, Epics, Stories, Sprints</td><td class="px-6 py-3 text-white font-medium">Jira</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded">DESIGN</span></td><td class="px-6 py-3 text-slate-400">UI/UX Design</td><td class="px-6 py-3 text-white font-medium">Figma</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded">DESIGN</span></td><td class="px-6 py-3 text-slate-400">UML Diagrams</td><td class="px-6 py-3 text-white font-medium">draw.io</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded">DESIGN</span></td><td class="px-6 py-3 text-slate-400">ER Diagram</td><td class="px-6 py-3 text-white font-medium">dbdiagram.io</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded">DESIGN</span></td><td class="px-6 py-3 text-slate-400">API Contract</td><td class="px-6 py-3 text-white font-medium">Swagger / OpenAPI</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded">DEVELOPMENT</span></td><td class="px-6 py-3 text-slate-400">Version Control</td><td class="px-6 py-3 text-white font-medium">Git + GitHub</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded">DEVELOPMENT</span></td><td class="px-6 py-3 text-slate-400">Frontend</td><td class="px-6 py-3 text-white font-medium">React.js</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded">DEVELOPMENT</span></td><td class="px-6 py-3 text-slate-400">Backend</td><td class="px-6 py-3 text-white font-medium">Spring Boot</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded">DEVELOPMENT</span></td><td class="px-6 py-3 text-slate-400">Microservices</td><td class="px-6 py-3 text-white font-medium">.NET</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded">DEVELOPMENT</span></td><td class="px-6 py-3 text-slate-400">Database</td><td class="px-6 py-3 text-white font-medium">MySQL</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded">DEVELOPMENT</span></td><td class="px-6 py-3 text-slate-400">API Testing</td><td class="px-6 py-3 text-white font-medium">Postman</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded">DEVELOPMENT</span></td><td class="px-6 py-3 text-slate-400">Code Reviews</td><td class="px-6 py-3 text-white font-medium">GitHub Pull Requests</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded">DEVOPS</span></td><td class="px-6 py-3 text-slate-400">Containerization</td><td class="px-6 py-3 text-white font-medium">Docker & Compose</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded">DEVOPS</span></td><td class="px-6 py-3 text-slate-400">CI/CD</td><td class="px-6 py-3 text-white font-medium">Jenkins</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded">DELIVERY</span></td><td class="px-6 py-3 text-slate-400">Frontend Hosting</td><td class="px-6 py-3 text-white font-medium">Vercel</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded">DELIVERY</span></td><td class="px-6 py-3 text-slate-400">Backend Hosting</td><td class="px-6 py-3 text-white font-medium">Render</td></tr>
+          <tr class="border-b border-white/5 hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded">DELIVERY</span></td><td class="px-6 py-3 text-slate-400">Database Hosting</td><td class="px-6 py-3 text-white font-medium">Railway (MySQL)</td></tr>
+          <tr class="hover:bg-white/[0.02]"><td class="px-6 py-3"><span class="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded">DELIVERY</span></td><td class="px-6 py-3 text-slate-400">Project Docs</td><td class="px-6 py-3 text-white font-medium">Notion + README.md</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PHASES HEADER ==================== -->
+<div class="border-t border-white/5 pt-16 mb-8"><h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight flex items-center gap-3"><i data-lucide="layers" class="w-6 h-6 text-brand-orange"></i>Phases</h2></div>
+
+<!-- ==================== PHASE 1 — PLANNING ==================== -->
+<div id="phase-1" class="bg-brand-gray border border-blue-500/10 rounded-2xl mb-8 scroll-mt-24 searchable" data-search="planning requirements jira user stories sprints personas">
+  <div class="phase-header flex items-center justify-between p-6" onclick="togglePhase('p1')">
+    <div class="flex items-center gap-4">
+      <span class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 font-serif font-semibold text-lg">01</span>
+      <div>
+        <div class="phase-badge text-blue-400 mb-0.5">Phase 1</div>
+        <h3 class="phase-title text-white font-medium text-xl">Project Planning</h3>
+        <p class="text-slate-500 text-xs mt-0.5">Understand exactly what we're building — before writing a single line of code</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="event.stopPropagation(); toggleCheck(1)" class="check-btn w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-slate-600 hover:border-white/20 transition-all" data-check="1" title="Mark complete"><i data-lucide="check" class="w-4 h-4"></i></button>
+      <i data-lucide="chevron-down" class="w-5 h-5 text-slate-600 transition-transform duration-300" data-chevron="p1"></i>
+    </div>
+  </div>
+  <div class="collapsible-content" data-content="p1">
+    <div class="px-6 pb-8 space-y-8">
+
+      <!-- Step 1 -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-blue-500/10 text-blue-400 flex items-center justify-center text-[10px] font-bold">1</span><h4 class="text-white font-medium">Requirement Gathering</h4></div>
+        <p class="text-slate-400 text-sm">Answer the fundamental questions: Who are the users? What problems are we solving? What features are needed?</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 text-center"><i data-lucide="file-text" class="w-4 h-4 text-blue-400 mx-auto mb-1.5"></i><div class="text-xs text-slate-300">Functional Req.</div></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 text-center"><i data-lucide="shield" class="w-4 h-4 text-blue-400 mx-auto mb-1.5"></i><div class="text-xs text-slate-300">Non-functional Req.</div></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 text-center"><i data-lucide="scan" class="w-4 h-4 text-blue-400 mx-auto mb-1.5"></i><div class="text-xs text-slate-300">Scope</div></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 text-center"><i data-lucide="help-circle" class="w-4 h-4 text-blue-400 mx-auto mb-1.5"></i><div class="text-xs text-slate-300">Assumptions</div></div>
+        </div>
+        <div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Tool:</span><span class="bg-brand-dark border border-white/10 text-white text-xs font-medium px-3 py-1 rounded-lg">Notion</span></div>
+        <div class="code-block rounded-xl p-4 font-mono text-xs text-slate-400 space-y-1">
+          <div class="text-blue-400">Project-Planning/</div>
+          <div class="pl-4">├── Project Overview</div>
+          <div class="pl-4">├── Requirements/</div>
+          <div class="pl-8">├── Functional Requirements</div>
+          <div class="pl-8">├── Non-Functional Requirements</div>
+          <div class="pl-4">├── Meeting Notes/</div>
+          <div class="pl-4">└── Project Scope</div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-blue-500/10 text-blue-400 flex items-center justify-center text-[10px] font-bold">2</span><h4 class="text-white font-medium">User Personas</h4></div>
+        <p class="text-slate-400 text-sm">Define who uses the system. Document their goals, responsibilities, and permissions.</p>
+        <div class="flex flex-col gap-2 max-w-xs">
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center"><i data-lucide="crown" class="w-4 h-4 text-red-400"></i></div><div><div class="text-xs text-white font-medium">Admin</div><div class="text-[10px] text-slate-500">Full system control</div></div></div>
+          <div class="text-slate-600 text-center text-xs">↓</div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-yellow-500/10 flex items-center justify-center"><i data-lucide="briefcase" class="w-4 h-4 text-yellow-400"></i></div><div><div class="text-xs text-white font-medium">Manager</div><div class="text-[10px] text-slate-500">Oversees auctions & teams</div></div></div>
+          <div class="text-slate-600 text-center text-xs">↓</div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center"><i data-lucide="user" class="w-4 h-4 text-green-400"></i></div><div><div class="text-xs text-white font-medium">Team Owner</div><div class="text-[10px] text-slate-500">Participates in auctions</div></div></div>
+        </div>
+        <div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Tool:</span><span class="bg-brand-dark border border-white/10 text-white text-xs font-medium px-3 py-1 rounded-lg">Notion</span></div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-blue-500/10 text-blue-400 flex items-center justify-center text-[10px] font-bold">3</span><h4 class="text-white font-medium">Agile Planning (Jira)</h4></div>
+        <p class="text-slate-400 text-sm">Create the Jira project and organize work into Epics and User Stories.</p>
+        <div><div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Epics</div>
+          <div class="flex flex-wrap gap-2"><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Authentication</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Auction Management</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Player Management</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Team Management</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Payments</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Reports</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Notifications</span></div>
+        </div>
+        <div><div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Story Example</div>
+          <div class="code-block rounded-xl p-4 font-mono text-xs space-y-2">
+            <div><span class="text-slate-500">Epic:</span> <span class="text-blue-400">Auction Management</span></div>
+            <div><span class="text-slate-500">Story:</span><div class="text-slate-300 mt-1 pl-2">As a <span class="text-green-400">Team Owner</span>,</div><div class="text-slate-300 pl-2">I want to <span class="text-blue-400">bid on players</span>,</div><div class="text-slate-300 pl-2">So that I can <span class="text-yellow-400">build my squad</span>.</div></div>
+            <div class="border-t border-white/5 pt-2"><span class="text-slate-500">Acceptance Criteria:</span><div class="text-slate-300 mt-1 pl-2"><span class="text-purple-400">Given</span> player is available</div><div class="text-slate-300 pl-2"><span class="text-purple-400">When</span> bid is placed</div><div class="text-slate-300 pl-2"><span class="text-purple-400">Then</span> highest bid updates</div></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Tool:</span><span class="bg-brand-dark border border-white/10 text-white text-xs font-medium px-3 py-1 rounded-lg">Jira (Free)</span></div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-blue-500/10 text-blue-400 flex items-center justify-center text-[10px] font-bold">4</span><h4 class="text-white font-medium">Sprint Planning</h4></div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5"><div class="text-[10px] font-bold text-blue-400 mb-2">Sprint 1</div><div class="text-xs text-slate-400">Authentication</div></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5"><div class="text-[10px] font-bold text-blue-400 mb-2">Sprint 2</div><div class="text-xs text-slate-400">Player CRUD</div></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5"><div class="text-[10px] font-bold text-blue-400 mb-2">Sprint 3</div><div class="text-xs text-slate-400">Auction</div></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5"><div class="text-[10px] font-bold text-blue-400 mb-2">Sprint 4</div><div class="text-xs text-slate-400">Payments</div></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5"><div class="text-[10px] font-bold text-blue-400 mb-2">Sprint 5</div><div class="text-xs text-slate-400">Deployment</div></div>
+        </div>
+      </div>
+
+      <!-- Deliverables -->
+      <div class="bg-blue-500/5 border border-blue-500/20 rounded-xl p-4">
+        <div class="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-3">Phase 1 Deliverables</div>
+        <div class="flex flex-wrap gap-2"><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Requirements</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Jira Backlog</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>User Stories</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Sprint Plan</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PHASE 2 — DESIGN ==================== -->
+<div id="phase-2" class="bg-brand-gray border border-purple-500/10 rounded-2xl mb-8 scroll-mt-24 searchable" data-search="design figma uml database er diagram architecture api swagger">
+  <div class="phase-header flex items-center justify-between p-6" onclick="togglePhase('p2')">
+    <div class="flex items-center gap-4">
+      <span class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 font-serif font-semibold text-lg">02</span>
+      <div><div class="phase-badge text-purple-400 mb-0.5">Phase 2</div><h3 class="phase-title text-white font-medium text-xl">System Design</h3><p class="text-slate-500 text-xs mt-0.5">No coding — everything is design</p></div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="event.stopPropagation(); toggleCheck(2)" class="check-btn w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-slate-600 hover:border-white/20 transition-all" data-check="2" title="Mark complete"><i data-lucide="check" class="w-4 h-4"></i></button>
+      <i data-lucide="chevron-down" class="w-5 h-5 text-slate-600 transition-transform duration-300" data-chevron="p2"></i>
+    </div>
+  </div>
+  <div class="collapsible-content" data-content="p2">
+    <div class="px-6 pb-8 space-y-8">
+      <!-- UI -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-purple-500/10 text-purple-400 flex items-center justify-center text-[10px] font-bold">1</span><h4 class="text-white font-medium">UI Design</h4></div>
+        <p class="text-slate-400 text-sm">Design all screens in Figma. Prototype the navigation flow.</p>
+        <div class="flex flex-wrap gap-2"><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Login</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Home</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Auction</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Dashboards</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Payment</span></div>
+        <div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Tool:</span><span class="bg-brand-dark border border-white/10 text-white text-xs font-medium px-3 py-1 rounded-lg">Figma</span></div>
+      </div>
+      <!-- Database -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-purple-500/10 text-purple-400 flex items-center justify-center text-[10px] font-bold">2</span><h4 class="text-white font-medium">Database Design</h4></div>
+        <p class="text-slate-400 text-sm">Design all entities and relationships. Generate the ER Diagram.</p>
+        <div class="flex flex-wrap gap-2"><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">User</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Player</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Auction</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Bid</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Team</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Payment</span></div>
+        <div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Tool:</span><span class="bg-brand-dark border border-white/10 text-white text-xs font-medium px-3 py-1 rounded-lg">dbdiagram.io</span></div>
+      </div>
+      <!-- UML -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-purple-500/10 text-purple-400 flex items-center justify-center text-[10px] font-bold">3</span><h4 class="text-white font-medium">UML Design</h4></div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500/60"></i><span class="text-xs text-slate-300">Use Case</span></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500/60"></i><span class="text-xs text-slate-300">Sequence</span></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500/60"></i><span class="text-xs text-slate-300">Activity</span></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500/60"></i><span class="text-xs text-slate-300">Class</span></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500/60"></i><span class="text-xs text-slate-300">Component</span></div>
+          <div class="bg-brand-dark rounded-xl p-3 border border-white/5 flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500/60"></i><span class="text-xs text-slate-300">Deployment</span></div>
+        </div>
+        <div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Tool:</span><span class="bg-brand-dark border border-white/10 text-white text-xs font-medium px-3 py-1 rounded-lg">draw.io</span></div>
+      </div>
+      <!-- Architecture -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-purple-500/10 text-purple-400 flex items-center justify-center text-[10px] font-bold">4</span><h4 class="text-white font-medium">Architecture Design</h4></div>
+        <div class="flex flex-col items-center gap-1 py-2">
+          <div class="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium px-4 py-1.5 rounded-lg">React (Frontend)</div>
+          <i data-lucide="chevron-down" class="w-3 h-3 text-slate-600"></i>
+          <div class="bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-medium px-4 py-1.5 rounded-lg">Spring Boot (Auction Service)</div>
+          <i data-lucide="chevron-down" class="w-3 h-3 text-slate-600"></i>
+          <div class="bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium px-4 py-1.5 rounded-lg">.NET Microservices (Payment, Notification)</div>
+          <i data-lucide="chevron-down" class="w-3 h-3 text-slate-600"></i>
+          <div class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs font-medium px-4 py-1.5 rounded-lg">MySQL (Database)</div>
+        </div>
+      </div>
+      <!-- API -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-purple-500/10 text-purple-400 flex items-center justify-center text-[10px] font-bold">5</span><h4 class="text-white font-medium">API Design</h4></div>
+        <p class="text-slate-400 text-sm">Define the API contract. No implementation yet — just the contract.</p>
+        <div class="code-block rounded-xl p-4 font-mono text-xs space-y-1.5">
+          <div><span class="text-green-400 font-semibold">POST</span> <span class="text-slate-400">/login</span></div>
+          <div><span class="text-blue-400 font-semibold">GET</span>  <span class="text-slate-400">/players</span></div>
+          <div><span class="text-green-400 font-semibold">POST</span> <span class="text-slate-400">/bid</span></div>
+          <div><span class="text-green-400 font-semibold">POST</span> <span class="text-slate-400">/auction/start</span></div>
+        </div>
+        <div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Tool:</span><span class="bg-brand-dark border border-white/10 text-white text-xs font-medium px-3 py-1 rounded-lg">Swagger / OpenAPI</span></div>
+      </div>
+      <div class="bg-purple-500/5 border border-purple-500/20 rounded-xl p-4">
+        <div class="text-[10px] font-bold uppercase tracking-widest text-purple-400 mb-3">Phase 2 Deliverables</div>
+        <div class="flex flex-wrap gap-2"><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Figma Designs</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>ER Diagram</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>UML Diagrams</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>API Design</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Architecture</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PHASE 3 — DEVELOPMENT ==================== -->
+<div id="phase-3" class="bg-brand-gray border border-green-500/10 rounded-2xl mb-8 scroll-mt-24 searchable" data-search="development github react spring boot .net mysql coding branch pull request solid repository pattern">
+  <div class="phase-header flex items-center justify-between p-6" onclick="togglePhase('p3')">
+    <div class="flex items-center gap-4">
+      <span class="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-400 font-serif font-semibold text-lg">03</span>
+      <div><div class="phase-badge text-green-400 mb-0.5">Phase 3</div><h3 class="phase-title text-white font-medium text-xl">Development</h3><p class="text-slate-500 text-xs mt-0.5">Create GitHub, branch, code, review, merge</p></div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="event.stopPropagation(); toggleCheck(3)" class="check-btn w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-slate-600 hover:border-white/20 transition-all" data-check="3" title="Mark complete"><i data-lucide="check" class="w-4 h-4"></i></button>
+      <i data-lucide="chevron-down" class="w-5 h-5 text-slate-600 transition-transform duration-300" data-chevron="p3"></i>
+    </div>
+  </div>
+  <div class="collapsible-content" data-content="p3">
+    <div class="px-6 pb-8 space-y-8">
+      <!-- Dev Flow -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-green-500/10 text-green-400 flex items-center justify-center text-[10px] font-bold">1</span><h4 class="text-white font-medium">Development Flow</h4></div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Create Branch</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i>
+          <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Develop</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i>
+          <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Commit</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i>
+          <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Push</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i>
+          <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Pull Request</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i>
+          <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Review</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i>
+          <span class="bg-green-500/10 border border-green-500/30 text-green-400 text-xs px-3 py-1.5 rounded-lg font-medium">Merge</span>
+        </div>
+      </div>
+      <!-- Tech Stack -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-green-500/10 text-green-400 flex items-center justify-center text-[10px] font-bold">2</span><h4 class="text-white font-medium">Technology Stack</h4></div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-brand-dark rounded-xl p-4 border border-white/5"><div class="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2">Frontend</div><div class="text-xs text-slate-400 space-y-1"><div>• React.js</div><div>• Bootstrap</div><div>• Axios</div></div></div>
+          <div class="bg-brand-dark rounded-xl p-4 border border-white/5"><div class="text-[10px] font-bold uppercase tracking-widest text-green-400 mb-2">Backend</div><div class="text-xs text-slate-400 space-y-1"><div>• Spring Boot</div><div>• REST APIs</div><div>• Hibernate + JWT</div></div></div>
+          <div class="bg-brand-dark rounded-xl p-4 border border-white/5"><div class="text-[10px] font-bold uppercase tracking-widest text-purple-400 mb-2">Microservices</div><div class="text-xs text-slate-400 space-y-1"><div>• .NET — Payment Service</div><div>• .NET — Notification Service</div></div></div>
+          <div class="bg-brand-dark rounded-xl p-4 border border-white/5"><div class="text-[10px] font-bold uppercase tracking-widest text-yellow-400 mb-2">Database</div><div class="text-xs text-slate-400 space-y-1"><div>• MySQL</div></div></div>
+        </div>
+      </div>
+      <!-- Coding Standards -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-green-500/10 text-green-400 flex items-center justify-center text-[10px] font-bold">3</span><h4 class="text-white font-medium">Coding Standards</h4></div>
+        <div class="flex flex-col gap-1.5 max-w-xs">
+          <div class="flex items-center gap-2 text-xs text-slate-400"><i data-lucide="chevron-right" class="w-3 h-3 text-green-500"></i>SOLID Principles</div>
+          <div class="flex items-center gap-2 text-xs text-slate-400 pl-5"><i data-lucide="chevron-right" class="w-3 h-3 text-green-500/60"></i>Dependency Injection</div>
+          <div class="flex items-center gap-2 text-xs text-slate-400 pl-5"><i data-lucide="chevron-right" class="w-3 h-3 text-green-500/60"></i>Repository Pattern</div>
+          <div class="flex items-center gap-2 text-xs text-slate-400 pl-5"><i data-lucide="chevron-right" class="w-3 h-3 text-green-500/60"></i>Factory Pattern</div>
+          <div class="flex items-center gap-2 text-xs text-slate-400"><i data-lucide="chevron-right" class="w-3 h-3 text-green-500"></i>Layered Architecture</div>
+          <div class="flex items-center gap-2 text-xs text-slate-400"><i data-lucide="chevron-right" class="w-3 h-3 text-green-500"></i>Structured Logging</div>
+        </div>
+      </div>
+      <!-- Swagger -->
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-green-500/10 text-green-400 flex items-center justify-center text-[10px] font-bold">4</span><h4 class="text-white font-medium">API Documentation</h4></div>
+        <p class="text-slate-400 text-sm">Swagger generates API docs automatically from Spring Boot annotations — no manual writing needed.</p>
+      </div>
+      <div class="bg-green-500/5 border border-green-500/20 rounded-xl p-4">
+        <div class="text-[10px] font-bold uppercase tracking-widest text-green-400 mb-3">Phase 3 Deliverables</div>
+        <div class="flex flex-wrap gap-2"><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Working Application</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>GitHub Repos</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Swagger Docs</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>REST APIs</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PHASE 4 — DEVOPS ==================== -->
+<div id="phase-4" class="bg-brand-gray border border-orange-500/10 rounded-2xl mb-8 scroll-mt-24 searchable" data-search="devops postman docker jenkins ci cd containerization pipeline">
+  <div class="phase-header flex items-center justify-between p-6" onclick="togglePhase('p4')">
+    <div class="flex items-center gap-4">
+      <span class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 font-serif font-semibold text-lg">04</span>
+      <div><div class="phase-badge text-orange-400 mb-0.5">Phase 4</div><h3 class="phase-title text-white font-medium text-xl">DevOps & Deployment</h3><p class="text-slate-500 text-xs mt-0.5">Test APIs, containerize, automate pipelines</p></div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="event.stopPropagation(); toggleCheck(4)" class="check-btn w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-slate-600 hover:border-white/20 transition-all" data-check="4" title="Mark complete"><i data-lucide="check" class="w-4 h-4"></i></button>
+      <i data-lucide="chevron-down" class="w-5 h-5 text-slate-600 transition-transform duration-300" data-chevron="p4"></i>
+    </div>
+  </div>
+  <div class="collapsible-content" data-content="p4">
+    <div class="px-6 pb-8 space-y-8">
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-orange-500/10 text-orange-400 flex items-center justify-center text-[10px] font-bold">1</span><h4 class="text-white font-medium">API Testing (Postman)</h4></div>
+        <div class="flex flex-wrap gap-2"><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Authentication</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Players</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Teams</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Payments</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Auction</span></div>
+      </div>
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-orange-500/10 text-orange-400 flex items-center justify-center text-[10px] font-bold">2</span><h4 class="text-white font-medium">Containerization (Docker)</h4></div>
+        <div class="flex flex-wrap gap-2 mb-3"><span class="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs px-3 py-1.5 rounded-lg">Frontend</span><span class="bg-green-500/10 border border-green-500/20 text-green-400 text-xs px-3 py-1.5 rounded-lg">Spring Boot</span><span class="bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs px-3 py-1.5 rounded-lg">.NET Services</span><span class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs px-3 py-1.5 rounded-lg">MySQL</span></div>
+        <div class="code-block rounded-xl p-4 font-mono text-xs"><span class="text-green-400">$</span> <span class="text-white">docker compose up</span><div class="text-slate-500 mt-1"># Entire project starts</div></div>
+      </div>
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-orange-500/10 text-orange-400 flex items-center justify-center text-[10px] font-bold">3</span><h4 class="text-white font-medium">CI/CD Pipeline (Jenkins)</h4></div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">GitHub Push</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i>
+          <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Jenkins Trigger</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i>
+          <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Build</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i>
+          <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Unit Test</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i>
+          <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Docker Build</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i>
+          <span class="bg-green-500/10 border border-green-500/30 text-green-400 text-xs px-3 py-1.5 rounded-lg font-medium">Deploy</span>
+        </div>
+      </div>
+      <div class="bg-orange-500/5 border border-orange-500/20 rounded-xl p-4">
+        <div class="text-[10px] font-bold uppercase tracking-widest text-orange-400 mb-3">Phase 4 Deliverables</div>
+        <div class="flex flex-wrap gap-2"><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Docker Images</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Docker Compose</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Jenkins Pipeline</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PHASE 5 — TESTING & DELIVERY ==================== -->
+<div id="phase-5" class="bg-brand-gray border border-red-500/10 rounded-2xl mb-8 scroll-mt-24 searchable" data-search="testing delivery deployment vercel render railway monitoring actuator documentation ppt presentation">
+  <div class="phase-header flex items-center justify-between p-6" onclick="togglePhase('p5')">
+    <div class="flex items-center gap-4">
+      <span class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 font-serif font-semibold text-lg">05</span>
+      <div><div class="phase-badge text-red-400 mb-0.5">Phase 5</div><h3 class="phase-title text-white font-medium text-xl">Testing & Delivery</h3><p class="text-slate-500 text-xs mt-0.5">Test, deploy, monitor, document, present</p></div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="event.stopPropagation(); toggleCheck(5)" class="check-btn w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-slate-600 hover:border-white/20 transition-all" data-check="5" title="Mark complete"><i data-lucide="check" class="w-4 h-4"></i></button>
+      <i data-lucide="chevron-down" class="w-5 h-5 text-slate-600 transition-transform duration-300" data-chevron="p5"></i>
+    </div>
+  </div>
+  <div class="collapsible-content" data-content="p5">
+    <div class="px-6 pb-8 space-y-8">
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-red-500/10 text-red-400 flex items-center justify-center text-[10px] font-bold">1</span><h4 class="text-white font-medium">Testing Levels</h4></div>
+        <div class="flex flex-wrap items-center gap-2"><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">API Testing</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">UI Testing</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Integration Testing</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600"></i><span class="bg-green-500/10 border border-green-500/30 text-green-400 text-xs px-3 py-1.5 rounded-lg font-medium">Deployment</span></div>
+      </div>
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-red-500/10 text-red-400 flex items-center justify-center text-[10px] font-bold">2</span><h4 class="text-white font-medium">Deployment</h4></div>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="bg-brand-dark rounded-xl p-4 border border-white/5"><div class="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2">Frontend</div><div class="text-xs text-slate-300">Vercel</div></div>
+          <div class="bg-brand-dark rounded-xl p-4 border border-white/5"><div class="text-[10px] font-bold uppercase tracking-widest text-green-400 mb-2">Backend</div><div class="text-xs text-slate-300">Render</div></div>
+          <div class="bg-brand-dark rounded-xl p-4 border border-white/5"><div class="text-[10px] font-bold uppercase tracking-widest text-yellow-400 mb-2">Database</div><div class="text-xs text-slate-300">Railway (MySQL)</div></div>
+        </div>
+      </div>
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-red-500/10 text-red-400 flex items-center justify-center text-[10px] font-bold">3</span><h4 class="text-white font-medium">Monitoring</h4></div>
+        <p class="text-slate-400 text-sm">Spring Boot Actuator for health checks and metrics. Logback (Spring Boot) / Serilog (.NET) for structured logging.</p>
+        <div class="code-block rounded-xl p-4 font-mono text-xs space-y-1"><div><span class="text-blue-400">GET</span> <span class="text-green-400">/actuator/health</span></div><div><span class="text-blue-400">GET</span> <span class="text-green-400">/actuator/metrics</span></div></div>
+      </div>
+      <div class="sub-step space-y-4">
+        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-red-500/10 text-red-400 flex items-center justify-center text-[10px] font-bold">4</span><h4 class="text-white font-medium">Final Documentation & Presentation</h4></div>
+        <div class="flex flex-wrap gap-2"><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">README.md</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Deployment Guide</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">API Guide</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">User Manual</span><span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg">Final PPT</span></div>
+      </div>
+      <div class="bg-red-500/5 border border-red-500/20 rounded-xl p-4">
+        <div class="text-[10px] font-bold uppercase tracking-widest text-red-400 mb-3">Phase 5 Deliverables</div>
+        <div class="flex flex-wrap gap-2"><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Deployed App</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Monitoring</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Documentation</span><span class="text-xs text-slate-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i>Final PPT</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GITHUB ORGANIZATION ==================== -->
+<div id="github-org" class="mt-20 mb-20 scroll-mt-24 print-break searchable" data-search="github organization repository repos structure folder">
+  <h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight mb-3 flex items-center gap-3"><i data-lucide="github" class="w-6 h-6 text-brand-orange"></i>GitHub Organization</h2>
+  <p class="text-slate-500 text-sm mb-8">Not a single monorepo — a proper GitHub Organization with multiple repositories. This mirrors how real teams structure projects.</p>
+
+  <!-- Org overview -->
+  <div class="code-block rounded-2xl p-6 font-mono text-xs md:text-sm space-y-1 mb-8">
+    <div class="text-brand-orange font-semibold">AuctXI/</div>
+    <div class="pl-4 text-slate-400">├── <span class="text-blue-400">auctxi-frontend</span></div>
+    <div class="pl-4 text-slate-400">├── <span class="text-green-400">auctxi-auction-service</span></div>
+    <div class="pl-4 text-slate-400">├── <span class="text-purple-400">auctxi-payment-service</span></div>
+    <div class="pl-4 text-slate-400">├── <span class="text-purple-400">auctxi-notification-service</span></div>
+    <div class="pl-4 text-slate-400">├── <span class="text-orange-400">auctxi-infra</span></div>
+    <div class="pl-4 text-slate-400">├── <span class="text-yellow-400">auctxi-docs</span></div>
+    <div class="pl-4 text-slate-400">└── <span class="text-cyan-400">auctxi-postman</span></div>
+  </div>
+
+  <!-- Recommended repos -->
+  <div class="bg-brand-orange/5 border border-brand-orange/20 rounded-2xl p-5 mb-8">
+    <div class="flex items-start gap-3"><i data-lucide="lightbulb" class="w-4 h-4 text-brand-orange mt-0.5 flex-shrink-0"></i><div><p class="text-slate-400 text-sm">If this is your <strong class="text-slate-200">first full-stack team project</strong>, keep it manageable:</p>
+    <div class="flex flex-wrap gap-2 mt-2"><span class="bg-brand-dark border border-white/10 text-white text-xs px-3 py-1 rounded-lg">auctxi-frontend</span><span class="bg-brand-dark border border-white/10 text-white text-xs px-3 py-1 rounded-lg">auctxi-auction-service</span><span class="bg-brand-dark border border-white/10 text-white text-xs px-3 py-1 rounded-lg">auctxi-payment-service</span><span class="bg-brand-dark border border-white/10 text-white text-xs px-3 py-1 rounded-lg">auctxi-docs</span><span class="bg-brand-dark border border-white/10 text-white text-xs px-3 py-1 rounded-lg">auctxi-infra</span></div></div></div>
+  </div>
+
+  <!-- Repo structures -->
+  <div class="space-y-6">
+
+    <!-- Frontend -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl overflow-hidden">
+      <div class="phase-header flex items-center justify-between p-5" onclick="togglePhase('repo1')">
+        <div class="flex items-center gap-3"><span class="text-blue-400 text-sm font-medium">auctxi-frontend</span><span class="text-[10px] text-slate-500 bg-white/5 px-2 py-0.5 rounded">React</span></div>
+        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 transition-transform duration-300" data-chevron="repo1"></i>
+      </div>
+      <div class="collapsible-content" data-content="repo1"><div class="px-5 pb-5">
+        <div class="code-block rounded-xl p-4 font-mono text-[11px] text-slate-400 space-y-0.5 overflow-x-auto">
+          <div class="text-blue-400">auctxi-frontend/</div><div class="pl-4">├── public/</div>
+          <div class="pl-4 text-blue-300">├── src/</div>
+          <div class="pl-8">├── assets/</div><div class="pl-12">├── images/</div><div class="pl-12">├── logos/</div><div class="pl-12">└── icons/</div>
+          <div class="pl-8">├── components/</div><div class="pl-12">├── common/</div><div class="pl-12">├── layout/</div><div class="pl-12">├── cards/</div><div class="pl-12">├── forms/</div><div class="pl-12">└── tables/</div>
+          <div class="pl-8">├── pages/</div><div class="pl-12">├── auth/</div><div class="pl-12">├── admin/</div><div class="pl-12">├── manager/</div><div class="pl-12">├── client/</div><div class="pl-12">└── error/</div>
+          <div class="pl-8">├── routes/</div><div class="pl-8">├── services/</div><div class="pl-8">├── hooks/</div><div class="pl-8">├── context/</div><div class="pl-8">├── utils/</div><div class="pl-8">├── constants/</div><div class="pl-8">├── styles/</div>
+          <div class="pl-8 text-white">└── App.jsx</div>
+          <div class="pl-4">├── tests/</div><div class="pl-4">├── .env.example</div><div class="pl-4">├── package.json</div><div class="pl-4 text-white">└── README.md</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Auction Service -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl overflow-hidden">
+      <div class="phase-header flex items-center justify-between p-5" onclick="togglePhase('repo2')">
+        <div class="flex items-center gap-3"><span class="text-green-400 text-sm font-medium">auctxi-auction-service</span><span class="text-[10px] text-slate-500 bg-white/5 px-2 py-0.5 rounded">Spring Boot</span></div>
+        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 transition-transform duration-300" data-chevron="repo2"></i>
+      </div>
+      <div class="collapsible-content" data-content="repo2"><div class="px-5 pb-5">
+        <div class="code-block rounded-xl p-4 font-mono text-[11px] text-slate-400 space-y-0.5 overflow-x-auto">
+          <div class="text-green-400">auctxi-auction-service/</div>
+          <div class="pl-4">├── src/main/</div>
+          <div class="pl-8">├── java/com.auctxi/</div>
+          <div class="pl-12">├── config/</div><div class="pl-12">├── controller/</div><div class="pl-12">├── service/</div><div class="pl-12">├── repository/</div><div class="pl-12">├── entity/</div><div class="pl-12">├── dto/</div><div class="pl-12">├── mapper/</div><div class="pl-12">├── exception/</div><div class="pl-12">├── security/</div><div class="pl-12">├── util/</div><div class="pl-12">└── validation/</div>
+          <div class="pl-8">└── resources/</div><div class="pl-12">├── application.yml</div><div class="pl-12">└── static/</div>
+          <div class="pl-4">├── test/</div><div class="pl-4">├── Dockerfile</div><div class="pl-4">├── pom.xml</div><div class="pl-4 text-white">└── README.md</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Payment Service -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl overflow-hidden">
+      <div class="phase-header flex items-center justify-between p-5" onclick="togglePhase('repo3')">
+        <div class="flex items-center gap-3"><span class="text-purple-400 text-sm font-medium">auctxi-payment-service</span><span class="text-[10px] text-slate-500 bg-white/5 px-2 py-0.5 rounded">.NET</span></div>
+        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 transition-transform duration-300" data-chevron="repo3"></i>
+      </div>
+      <div class="collapsible-content" data-content="repo3"><div class="px-5 pb-5">
+        <div class="code-block rounded-xl p-4 font-mono text-[11px] text-slate-400 space-y-0.5 overflow-x-auto">
+          <div class="text-purple-400">auctxi-payment-service/</div>
+          <div class="pl-4">├── Controllers/</div><div class="pl-4">├── Services/</div><div class="pl-4">├── Repositories/</div><div class="pl-4">├── Models/</div><div class="pl-4">├── DTOs/</div><div class="pl-4">├── Interfaces/</div><div class="pl-4">├── Middleware/</div><div class="pl-4">├── Configuration/</div><div class="pl-4">├── Utilities/</div><div class="pl-4">├── Logs/</div><div class="pl-4">├── Tests/</div><div class="pl-4">├── Dockerfile</div><div class="pl-4 text-white">└── README.md</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Notification Service -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl overflow-hidden">
+      <div class="phase-header flex items-center justify-between p-5" onclick="togglePhase('repo4')">
+        <div class="flex items-center gap-3"><span class="text-purple-400 text-sm font-medium">auctxi-notification-service</span><span class="text-[10px] text-slate-500 bg-white/5 px-2 py-0.5 rounded">.NET</span></div>
+        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 transition-transform duration-300" data-chevron="repo4"></i>
+      </div>
+      <div class="collapsible-content" data-content="repo4"><div class="px-5 pb-5">
+        <div class="code-block rounded-xl p-4 font-mono text-[11px] text-slate-400 space-y-0.5 overflow-x-auto">
+          <div class="text-purple-400">auctxi-notification-service/</div>
+          <div class="pl-4">├── Controllers/</div><div class="pl-4">├── Services/</div><div class="pl-4">├── Models/</div><div class="pl-4">├── Email/</div><div class="pl-4">├── SMS/</div><div class="pl-4">├── Templates/</div><div class="pl-4">├── Tests/</div><div class="pl-4">├── Dockerfile</div><div class="pl-4 text-white">└── README.md</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Infra -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl overflow-hidden">
+      <div class="phase-header flex items-center justify-between p-5" onclick="togglePhase('repo5')">
+        <div class="flex items-center gap-3"><span class="text-orange-400 text-sm font-medium">auctxi-infra</span><span class="text-[10px] text-slate-500 bg-white/5 px-2 py-0.5 rounded">DevOps</span></div>
+        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 transition-transform duration-300" data-chevron="repo5"></i>
+      </div>
+      <div class="collapsible-content" data-content="repo5"><div class="px-5 pb-5">
+        <div class="code-block rounded-xl p-4 font-mono text-[11px] text-slate-400 space-y-0.5 overflow-x-auto">
+          <div class="text-orange-400">auctxi-infra/</div>
+          <div class="pl-4 text-cyan-300">├── docker/</div><div class="pl-8">├── docker-compose.yml</div><div class="pl-8">├── frontend.Dockerfile</div><div class="pl-8">├── backend.Dockerfile</div><div class="pl-8">└── payment.Dockerfile</div>
+          <div class="pl-4 text-cyan-300">├── jenkins/</div><div class="pl-8">└── Jenkinsfile</div>
+          <div class="pl-4">├── nginx/</div><div class="pl-4">├── deployment/</div><div class="pl-4 text-white">└── README.md</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Docs -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl overflow-hidden">
+      <div class="phase-header flex items-center justify-between p-5" onclick="togglePhase('repo6')">
+        <div class="flex items-center gap-3"><span class="text-yellow-400 text-sm font-medium">auctxi-docs</span><span class="text-[10px] text-slate-500 bg-white/5 px-2 py-0.5 rounded">Documentation</span></div>
+        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 transition-transform duration-300" data-chevron="repo6"></i>
+      </div>
+      <div class="collapsible-content" data-content="repo6"><div class="px-5 pb-5">
+        <div class="code-block rounded-xl p-4 font-mono text-[11px] text-slate-400 space-y-0.5 overflow-x-auto">
+          <div class="text-yellow-400">auctxi-docs/</div>
+          <div class="pl-4">├── SRS/</div><div class="pl-4">├── Meeting-Minutes/</div><div class="pl-4">├── Requirements/</div><div class="pl-4">├── Architecture/</div><div class="pl-4">├── UML/</div><div class="pl-4">├── ER-Diagram/</div><div class="pl-4">├── API/</div><div class="pl-4">├── Database/</div><div class="pl-4">├── Sprint-Reports/</div><div class="pl-4">├── Deployment/</div><div class="pl-4">├── PPT/</div><div class="pl-4">├── Images/</div><div class="pl-4 text-white">└── README.md</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Postman -->
+    <div class="bg-brand-gray border border-white/5 rounded-2xl overflow-hidden">
+      <div class="phase-header flex items-center justify-between p-5" onclick="togglePhase('repo7')">
+        <div class="flex items-center gap-3"><span class="text-cyan-400 text-sm font-medium">auctxi-postman</span><span class="text-[10px] text-slate-500 bg-white/5 px-2 py-0.5 rounded">API Testing</span></div>
+        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 transition-transform duration-300" data-chevron="repo7"></i>
+      </div>
+      <div class="collapsible-content" data-content="repo7"><div class="px-5 pb-5">
+        <div class="code-block rounded-xl p-4 font-mono text-[11px] text-slate-400 space-y-0.5 overflow-x-auto">
+          <div class="text-cyan-400">auctxi-postman/</div><div class="pl-4">├── Collections/</div><div class="pl-4">├── Environments/</div><div class="pl-4 text-white">└── README.md</div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== BRANCH STRATEGY ==================== -->
+<div id="branch-strategy" class="mb-20 scroll-mt-24 searchable" data-search="branch strategy git branching feature bugfix release hotfix">
+  <h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight mb-8 flex items-center gap-3"><i data-lucide="git-branch" class="w-6 h-6 text-brand-orange"></i>Branch Strategy</h2>
+  <div class="bg-red-500/5 border border-red-500/20 rounded-lg p-3 mb-6 flex items-start gap-2"><i data-lucide="alert-triangle" class="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0"></i><span class="text-xs text-red-300">Never work directly on <code class="bg-red-500/10 px-1 rounded">main</code>.</span></div>
+  <div class="code-block rounded-2xl p-6 font-mono text-xs md:text-sm space-y-1 overflow-x-auto">
+    <div><span class="text-green-400 font-semibold">main</span> <span class="text-slate-600">← production-ready</span></div>
+    <div class="text-slate-600">│</div>
+    <div><span class="text-blue-400 font-semibold">develop</span> <span class="text-slate-600">← integration branch</span></div>
+    <div class="text-slate-600">│</div>
+    <div class="text-slate-600">├── <span class="text-yellow-400">feature/authentication</span></div>
+    <div class="text-slate-600">├── <span class="text-yellow-400">feature/player-management</span></div>
+    <div class="text-slate-600">├── <span class="text-yellow-400">feature/team-management</span></div>
+    <div class="text-slate-600">├── <span class="text-yellow-400">feature/live-auction</span></div>
+    <div class="text-slate-600">├── <span class="text-yellow-400">feature/payment</span></div>
+    <div class="text-slate-600">├── <span class="text-yellow-400">feature/reports</span></div>
+    <div class="text-slate-600">│</div>
+    <div class="text-slate-600">├── <span class="text-red-400">bugfix/login</span></div>
+    <div class="text-slate-600">├── <span class="text-red-400">bugfix/payment</span></div>
+    <div class="text-slate-600">│</div>
+    <div class="text-slate-600">├── <span class="text-purple-400">release/v1.0</span></div>
+    <div class="text-slate-600">│</div>
+    <div class="text-slate-600">└── <span class="text-orange-400">hotfix/critical-bug</span></div>
+  </div>
+</div>
+
+<!-- ==================== LABELS & MILESTONES ==================== -->
+<div id="labels-milestones" class="mb-20 scroll-mt-24 searchable" data-search="labels milestones github issues tags">
+  <h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight mb-8 flex items-center gap-3"><i data-lucide="tag" class="w-6 h-6 text-brand-orange"></i>Labels & Milestones</h2>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-6">
+      <h3 class="text-white font-medium text-sm mb-4">GitHub Labels</h3>
+      <div class="flex flex-wrap gap-2">
+        <span class="bg-green-500/10 border border-green-500/20 text-green-400 text-xs px-3 py-1 rounded-full">feature</span>
+        <span class="bg-red-500/10 border border-red-500/20 text-red-400 text-xs px-3 py-1 rounded-full">bug</span>
+        <span class="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs px-3 py-1 rounded-full">documentation</span>
+        <span class="bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs px-3 py-1 rounded-full">enhancement</span>
+        <span class="bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs px-3 py-1 rounded-full">backend</span>
+        <span class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs px-3 py-1 rounded-full">frontend</span>
+        <span class="bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs px-3 py-1 rounded-full">database</span>
+        <span class="bg-pink-500/10 border border-pink-500/20 text-pink-400 text-xs px-3 py-1 rounded-full">testing</span>
+        <span class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs px-3 py-1 rounded-full">deployment</span>
+        <span class="bg-red-600/10 border border-red-600/30 text-red-300 text-xs px-3 py-1 rounded-full font-medium">urgent</span>
+      </div>
+    </div>
+    <div class="bg-brand-gray border border-white/5 rounded-2xl p-6">
+      <h3 class="text-white font-medium text-sm mb-4">Milestones (match Jira Sprints)</h3>
+      <div class="space-y-2">
+        <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-blue-400"></div><span class="text-sm text-slate-300">Sprint 1</span><span class="text-xs text-slate-600 ml-auto">Authentication</span></div>
+        <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-blue-400"></div><span class="text-sm text-slate-300">Sprint 2</span><span class="text-xs text-slate-600 ml-auto">Player CRUD</span></div>
+        <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-blue-400"></div><span class="text-sm text-slate-300">Sprint 3</span><span class="text-xs text-slate-600 ml-auto">Auction</span></div>
+        <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-blue-400"></div><span class="text-sm text-slate-300">Sprint 4</span><span class="text-xs text-slate-600 ml-auto">Payments</span></div>
+        <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-green-400"></div><span class="text-sm text-white font-medium">Release v1.0</span><span class="text-xs text-slate-600 ml-auto">Production</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PR TEMPLATE ==================== -->
+<div id="pr-template" class="mb-20 scroll-mt-24 searchable" data-search="pull request template pr format">
+  <h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight mb-8 flex items-center gap-3"><i data-lucide="git-pull-request" class="w-6 h-6 text-brand-orange"></i>Pull Request Template</h2>
+  <p class="text-slate-500 text-sm mb-6">Every PR must include this structure. Place in <code class="bg-white/5 px-1.5 py-0.5 rounded text-xs">.github/pull_request_template.md</code>.</p>
+  <div class="code-block rounded-2xl p-6 font-mono text-xs text-slate-400 space-y-4 leading-relaxed">
+    <div class="text-white font-semibold">## Description</div>
+    <div class="text-slate-500">What does this PR implement?</div>
+    <div class="text-white font-semibold mt-2">## Jira Story</div>
+    <div class="text-blue-400">AUCTXI-25</div>
+    <div class="text-white font-semibold mt-2">## Changes</div>
+    <div>- Added Player CRUD</div><div>- Added Validation</div><div>- Added Unit Tests</div>
+    <div class="text-white font-semibold mt-2">## Testing</div>
+    <div>- Postman Tested</div><div>- UI Tested</div>
+    <div class="text-white font-semibold mt-2">## Screenshots</div>
+    <div class="text-slate-500">(If applicable)</div>
+    <div class="text-white font-semibold mt-2">## Checklist</div>
+    <div>- [ ] Code builds successfully</div><div>- [ ] Tests passed</div><div>- [ ] Documentation updated</div>
+  </div>
+</div>
+
+<!-- ==================== FEATURE WORKFLOW ==================== -->
+<div id="workflow" class="mb-20 scroll-mt-24 searchable" data-search="feature workflow professional cycle jira figma github branch development review merge deploy">
+  <h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight mb-8 flex items-center gap-3"><i data-lucide="refresh-cw" class="w-6 h-6 text-brand-orange"></i>Feature Workflow</h2>
+  <p class="text-slate-500 text-sm mb-6">Every single feature follows this lifecycle:</p>
+  <div class="bg-brand-gray border border-white/5 rounded-2xl p-6 md:p-8">
+    <div class="flex flex-wrap items-center gap-2 justify-center">
+      <span class="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs px-3 py-2 rounded-lg font-medium">Jira Story</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600 hidden sm:block"></i>
+      <span class="bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs px-3 py-2 rounded-lg font-medium">Figma Design</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600 hidden sm:block"></i>
+      <span class="bg-slate-500/10 border border-slate-500/20 text-slate-300 text-xs px-3 py-2 rounded-lg font-medium">GitHub Branch</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600 hidden sm:block"></i>
+      <span class="bg-green-500/10 border border-green-500/20 text-green-400 text-xs px-3 py-2 rounded-lg font-medium">Development</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600 hidden sm:block"></i>
+      <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-2 rounded-lg font-medium">Pull Request</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600 hidden sm:block"></i>
+      <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-2 rounded-lg font-medium">Review</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600 hidden sm:block"></i>
+      <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-2 rounded-lg font-medium">Testing</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600 hidden sm:block"></i>
+      <span class="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-2 rounded-lg font-medium">Merge</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600 hidden sm:block"></i>
+      <span class="bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs px-3 py-2 rounded-lg font-medium">Deploy</span><i data-lucide="arrow-right" class="w-3 h-3 text-slate-600 hidden sm:block"></i>
+      <span class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs px-3 py-2 rounded-lg font-medium">Documentation</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== COMPLETE FLOW ==================== -->
+<div id="complete-flow" class="mb-20 scroll-mt-24 searchable" data-search="complete flow end to end lifecycle">
+  <h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight mb-8 flex items-center gap-3"><i data-lucide="arrow-down-circle" class="w-6 h-6 text-brand-orange"></i>Complete End-to-End Flow</h2>
+  <div class="bg-brand-gray border border-white/5 rounded-2xl p-6 md:p-8 overflow-x-auto">
+    <div class="flex flex-col items-center gap-0.5 min-w-[400px] font-mono text-xs">
+      <div class="text-brand-orange text-xs font-semibold">Idea</div><div class="text-slate-600">│</div>
+      <div class="text-slate-300">Requirement Gathering</div><div class="text-slate-600">│</div>
+      <div class="text-slate-300">SRS Documentation</div><div class="text-slate-600">│</div>
+      <div class="text-slate-300">User Personas</div><div class="text-slate-600">│</div>
+      <div class="text-blue-400">Jira Epics</div><div class="text-slate-600">│</div>
+      <div class="text-blue-400">User Stories</div><div class="text-slate-600">│</div>
+      <div class="text-blue-400">Sprint Planning</div><div class="text-slate-600">│</div>
+      <div class="text-purple-400">Figma UI</div><div class="text-slate-600">│</div>
+      <div class="text-purple-400">Database Design</div><div class="text-slate-600">│</div>
+      <div class="text-purple-400">UML Diagrams</div><div class="text-slate-600">│</div>
+      <div class="text-purple-400">Architecture Design</div><div class="text-slate-600">│</div>
+      <div class="text-purple-400">API Design</div><div class="text-slate-600">│</div>
+      <div class="text-slate-300">GitHub Repository</div><div class="text-slate-600">│</div>
+      <div class="text-green-400">Development</div><div class="text-slate-600">│</div>
+      <div class="text-green-400">Pull Requests</div><div class="text-slate-600">│</div>
+      <div class="text-green-400">Code Review</div><div class="text-slate-600">│</div>
+      <div class="text-green-400">Testing</div><div class="text-slate-600">│</div>
+      <div class="text-green-400">Swagger Documentation</div><div class="text-slate-600">│</div>
+      <div class="text-orange-400">Docker</div><div class="text-slate-600">│</div>
+      <div class="text-orange-400">Jenkins CI/CD</div><div class="text-slate-600">│</div>
+      <div class="text-red-400">Deployment</div><div class="text-slate-600">│</div>
+      <div class="text-slate-300">Final Documentation</div><div class="text-slate-600">│</div>
+      <div class="text-white font-semibold">Presentation</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DELIVERABLES ==================== -->
+<div id="deliverables" class="mb-20 scroll-mt-24 print-break searchable" data-search="deliverables final output what you get">
+  <h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight mb-8 flex items-center gap-3"><i data-lucide="check-circle" class="w-6 h-6 text-brand-orange"></i>What You'll End Up With</h2>
+  <div class="space-y-3">
+    <div class="bg-brand-gray border border-white/5 rounded-xl p-4 flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div><span class="text-sm text-slate-300">A GitHub <strong class="text-white">Organization</strong> with 5–7 professional repositories</span></div>
+    <div class="bg-brand-gray border border-white/5 rounded-xl p-4 flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div><span class="text-sm text-slate-300">Jira board with Epics, User Stories, Tasks, and Sprints</span></div>
+    <div class="bg-brand-gray border border-white/5 rounded-xl p-4 flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div><span class="text-sm text-slate-300">Figma designs linked to development</span></div>
+    <div class="bg-brand-gray border border-white/5 rounded-xl p-4 flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div><span class="text-sm text-slate-300">Complete SRS, UML, ER Diagram, and architecture documentation</span></div>
+    <div class="bg-brand-gray border border-white/5 rounded-xl p-4 flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div><span class="text-sm text-slate-300">REST APIs documented with Swagger</span></div>
+    <div class="bg-brand-gray border border-white/5 rounded-xl p-4 flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div><span class="text-sm text-slate-300">Tested APIs using Postman collections</span></div>
+    <div class="bg-brand-gray border border-white/5 rounded-xl p-4 flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div><span class="text-sm text-slate-300">Dockerized services with Docker Compose</span></div>
+    <div class="bg-brand-gray border border-white/5 rounded-xl p-4 flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div><span class="text-sm text-slate-300">Automated CI/CD pipeline with Jenkins</span></div>
+    <div class="bg-brand-gray border border-white/5 rounded-xl p-4 flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div><span class="text-sm text-slate-300">A deployed application with monitoring</span></div>
+    <div class="bg-brand-gray border border-white/5 rounded-xl p-4 flex items-center gap-4"><div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div><span class="text-sm text-slate-300">Professional branch strategy, labels, milestones, and PR templates</span></div>
+  </div>
+  <div class="mt-8 bg-brand-gray border border-white/5 rounded-2xl p-6">
+    <p class="text-slate-400 text-sm leading-relaxed">This is very close to how a <strong class="text-white">small-to-medium professional software team</strong> would deliver a project. Following this workflow ensures you can confidently discuss every aspect of the SDLC in interviews — not just the code.</p>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="border-t border-white/5 pt-8 pb-12 text-center">
+  <div class="flex items-center justify-center gap-2 mb-3"><div class="w-6 h-6 bg-brand-orange rounded-md flex items-center justify-center"><i data-lucide="gavel" class="w-3 h-3 text-white"></i></div><span class="font-serif text-sm font-semibold text-white">AuctXI</span></div>
+  <p class="text-xs text-slate-600">Professional Development Roadmap v1.0</p>
+</footer>
+
+</div>
+</main>
+
+<script>
+lucide.createIcons();
+const completedPhases = new Set();
+
+function togglePhase(id) {
+  const c = document.querySelector('[data-content="'+id+'"]');
+  const ch = document.querySelector('[data-chevron="'+id+'"]');
+  if (!c || !ch) return;
+  c.classList.toggle('open');
+  ch.style.transform = c.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+function toggleCheck(id) {
+  const btn = document.querySelector('[data-check="'+id+'"]');
+  if (!btn) return;
+  btn.classList.toggle('checked');
+  if (btn.classList.contains('checked')) { completedPhases.add(id); showToast('Phase '+id+' completed!'); }
+  else { completedPhases.delete(id); }
+  updateProgress(); saveState();
+}
+
+function updateProgress() {
+  const n = completedPhases.size;
+  document.getElementById('progressText').textContent = n+'/5';
+  document.getElementById('progressBar').style.width = (n/5*100)+'%';
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast bg-brand-gray border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3 shadow-2xl';
+  t.innerHTML = '<div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0"><svg class="w-3 h-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div><span class="text-sm text-slate-300">'+msg+'</span>';
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(function(){ t.remove(); }, 3000);
+}
+
+function filterSections(q) {
+  q = q.toLowerCase().trim();
+  document.querySelectorAll('.searchable').forEach(function(el) {
+    const name = (el.dataset.search || '') + ' ' + el.textContent.toLowerCase();
+    el.style.display = (!q || name.includes(q)) ? '' : 'none';
+  });
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('-translate-x-full');
+  document.getElementById('sidebarOverlay').classList.toggle('hidden');
+}
+
+var allSections = document.querySelectorAll('section[id], div[id]');
+var sidebarLinks = document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll', function() {
+  var cur = '';
+  allSections.forEach(function(s) { if (s.getBoundingClientRect().top <= 120) cur = s.id; });
+  sidebarLinks.forEach(function(l) { l.classList.remove('active'); if (l.getAttribute('href') === '#'+cur) l.classList.add('active'); });
+});
+sidebarLinks.forEach(function(l) { l.addEventListener('click', function() { if (window.innerWidth < 1024) toggleSidebar(); }); });
+
+function saveState() { localStorage.setItem('auctxi-v2', JSON.stringify(Array.from(completedPhases))); }
+function loadState() { try { var s = JSON.parse(localStorage.getItem('auctxi-v2')); if (s) { s.forEach(function(n) { completedPhases.add(n); var b = document.querySelector('[data-check="'+n+'"]'); if (b) b.classList.add('checked'); }); updateProgress(); } } catch(e){} }
+loadState();
+togglePhase('p1');
+</script>
+</body>
+</html>
